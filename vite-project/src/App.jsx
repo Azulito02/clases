@@ -1,35 +1,60 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [peso, setPeso] = useState("");
+  const [altura, setAltura] = useState("");
+  const [imc, setImc] = useState(null);
+  const [mensaje, setMensaje] = useState("");
+
+  const calcularIMC = () => {
+    if (!peso || !altura) {
+      setMensaje("Por favor, ingresa peso y altura válidos.");
+      return;
+    }
+
+    const alturaMetros = altura / 100; // Convertir cm a metros
+    const imcCalculado = (peso / (alturaMetros * alturaMetros)).toFixed(2);
+
+    setImc(imcCalculado);
+    definirMensaje(imcCalculado);
+  };
+
+  const definirMensaje = (imc) => {
+    if (imc < 18.5) setMensaje("Bajo peso");
+    else if (imc < 24.9) setMensaje("Peso normal");
+    else if (imc < 29.9) setMensaje("Sobrepeso");
+    else setMensaje("Obesidad");
+  };
 
   return (
-    <>
+    <div style={{ textAlign: "center", marginTop: "50px" }}>
+      <h2>Calculadora de IMC</h2>
       <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <input
+          type="number"
+          placeholder="Peso en kg"
+          value={peso}
+          onChange={(e) => setPeso(e.target.value)}
+        />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+      <div>
+        <input
+          type="number"
+          placeholder="Altura en cm"
+          value={altura}
+          onChange={(e) => setAltura(e.target.value)}
+        />
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+      <button onClick={calcularIMC}>Calcular IMC</button>
+
+      {imc && (
+        <div>
+          <h3>Tu IMC es: {imc}</h3>
+          <p>{mensaje}</p>
+        </div>
+      )}
+    </div>
+  );
 }
 
-export default App
+export default App;
